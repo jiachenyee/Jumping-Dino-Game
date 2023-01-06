@@ -35,8 +35,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
     var detectionOverlayLayer: CALayer?
     var detectedFaceRectangleShapeLayer: CAShapeLayer?
     var faceOverShapeLayer: CAShapeLayer?
-    
-//    var detectedFaceLandmarksShapeLayer: CAShapeLayer?
+    var dinoLayer: CALayer?
     
     // Vision requests
     private var detectionRequests: [VNDetectFaceRectanglesRequest]?
@@ -321,7 +320,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         faceRectangleShapeLayer.anchorPoint = normalizedCenterPoint
         faceRectangleShapeLayer.position = captureDeviceBoundsCenterPoint
         faceRectangleShapeLayer.fillColor = nil
-        faceRectangleShapeLayer.strokeColor = NSColor.blue.withAlphaComponent(0.8).cgColor
+        faceRectangleShapeLayer.strokeColor = NSColor.blue.withAlphaComponent(0.25).cgColor
         faceRectangleShapeLayer.lineWidth = 10
         faceRectangleShapeLayer.shadowOpacity = 0.7
         faceRectangleShapeLayer.shadowRadius = 5
@@ -332,15 +331,23 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         faceOverShapeLayer.anchorPoint = normalizedCenterPoint
         faceOverShapeLayer.position = captureDeviceBoundsCenterPoint
         faceOverShapeLayer.fillColor = nil
-        faceOverShapeLayer.strokeColor = NSColor.red.withAlphaComponent(0.8).cgColor
+        faceOverShapeLayer.strokeColor = NSColor.red.withAlphaComponent(0.5).cgColor
         faceOverShapeLayer.lineWidth = 30
         faceOverShapeLayer.shadowOpacity = 0.7
         faceOverShapeLayer.shadowRadius = 5
+        
+        let dinoLayer = CALayer()
+        dinoLayer.name = "Dino"
+        dinoLayer.contents = NSImage(named: "dino")!.cgImage(forProposedRect: nil, context: nil, hints: nil)
+        
+        dinoLayer.setAffineTransform(.init(rotationAngle: .pi))
+        self.dinoLayer = dinoLayer
         
         self.faceOverShapeLayer = faceOverShapeLayer
         
         overlayLayer.addSublayer(faceOverShapeLayer)
         overlayLayer.addSublayer(faceRectangleShapeLayer)
+        overlayLayer.addSublayer(dinoLayer)
         rootLayer.addSublayer(overlayLayer)
         
         self.detectionOverlayLayer = overlayLayer
@@ -413,6 +420,10 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         let dataPoint = CGPoint(x: faceRectanglePath.boundingBox.midX, y: faceRectanglePath.boundingBox.midY)
         
+        let dinoWidth = faceRectanglePath.boundingBox.width * 2
+        
+        self.dinoLayer?.frame = CGRect(x: dataPoint.x - dinoWidth / 3 * 2, y: faceRectanglePath.boundingBox.maxY, width: dinoWidth, height: dinoWidth)
+        
         latestPoint = PointPair(date: .init(), point: dataPoint)
         if let refY = referencePoint?.point.y {
             if (refY - dataPoint.y) < 25 {
@@ -430,7 +441,6 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
 
         
         faceRectangleShapeLayer.path = faceRectanglePath
-//        faceLandmarksShapeLayer.path = faceLandmarksPath
         
         self.updateLayerGeometry()
         
