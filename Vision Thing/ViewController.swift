@@ -50,6 +50,12 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.previewView.wantsLayer = true
         // Do any additional setup after loading the view.
         jumpLabel.isHidden = true
+        
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
+            self.keyDown(with: $0)
+            
+            return $0
+        }
     }
     
     override func viewDidAppear() {
@@ -95,7 +101,6 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
             return captureSession
         } catch let executionError as NSError {
             self.presentError(executionError)
-            
         } catch {
             self.presentErrorAlert(message: "An unexpected failure has occured")
         }
@@ -142,12 +147,11 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
                 if let highestResolution = self.highestResolution420Format(for: device) {
                     
                     try device.lockForConfiguration()
-                    print("aa")
+                    
                     device.activeFormat = highestResolution.format
                     device.unlockForConfiguration()
                     
                     return (device, highestResolution.resolution)
-                    print("aa")
                 }
             }
         }
@@ -155,6 +159,16 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         throw NSError(domain: "ViewController", code: 1, userInfo: nil)
     }
     
+    @IBAction func retrackButtonPressed(_ sender: Any) {
+        self.session = self.setupAVCaptureSession()
+        
+        self.prepareVisionRequest()
+        
+        self.session?.startRunning()
+        
+        latestPoint = nil
+        referencePoint = nil
+    }
     /// - Tag: CreateSerialDispatchQueue
     fileprivate func configureVideoDataOutput(for inputDevice: AVCaptureDevice, resolution: CGSize, captureSession: AVCaptureSession) {
         
@@ -171,12 +185,6 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         
         videoDataOutput.connection(with: .video)?.isEnabled = true
-        
-        if let captureConnection = videoDataOutput.connection(with: AVMediaType.video) {
-//            if captureConnection.isCameraIntrinsicMatrixDeliverySupported {
-//                captureConnection.isCameraIntrinsicMatrixDeliveryEnabled = true
-//            }
-        }
         
         self.videoDataOutput = videoDataOutput
         self.videoDataOutputQueue = videoDataOutputQueue
@@ -218,8 +226,6 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
     // MARK: Helper Methods for Error Presentation
     
     fileprivate func presentErrorAlert(withTitle title: String = "Unexpected Failure", message: String) {
-//        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-//        self.present(alertController, animated: true)
         print(message)
     }
     
@@ -252,7 +258,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
             
             guard let faceDetectionRequest = request as? VNDetectFaceRectanglesRequest,
-                  let results = faceDetectionRequest.results as? [VNFaceObservation] else {
+                  let results = faceDetectionRequest.results else {
                 return
             }
             DispatchQueue.main.async {
@@ -273,9 +279,18 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.setupVisionDrawingLayers()
     }
     
-    // MARK: Drawing Vision Observations
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 8 {
+            callibrateButtonPressed(self)
+        } else if event.keyCode == 15 {
+            retrackButtonPressed(self)
+        } else {
+            super.keyDown(with: event)
+        }
+    }
     
-    fileprivate func setupVisionDrawingLayers() {
+    // MARK: Drawing Vision Observations
+    fileprivate func setupVisionDrawingLayers()  {
         let captureDeviceResolution = self.captureDeviceResolution
         
         let captureDeviceBounds = CGRect(x: 0,
@@ -306,7 +321,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         faceRectangleShapeLayer.anchorPoint = normalizedCenterPoint
         faceRectangleShapeLayer.position = captureDeviceBoundsCenterPoint
         faceRectangleShapeLayer.fillColor = nil
-        faceRectangleShapeLayer.strokeColor = NSColor.blue.cgColor
+        faceRectangleShapeLayer.strokeColor = NSColor.blue.withAlphaComponent(0.8).cgColor
         faceRectangleShapeLayer.lineWidth = 10
         faceRectangleShapeLayer.shadowOpacity = 0.7
         faceRectangleShapeLayer.shadowRadius = 5
@@ -317,32 +332,19 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         faceOverShapeLayer.anchorPoint = normalizedCenterPoint
         faceOverShapeLayer.position = captureDeviceBoundsCenterPoint
         faceOverShapeLayer.fillColor = nil
-        faceOverShapeLayer.strokeColor = NSColor.red.cgColor
+        faceOverShapeLayer.strokeColor = NSColor.red.withAlphaComponent(0.8).cgColor
         faceOverShapeLayer.lineWidth = 30
         faceOverShapeLayer.shadowOpacity = 0.7
         faceOverShapeLayer.shadowRadius = 5
         
         self.faceOverShapeLayer = faceOverShapeLayer
         
-//        let faceLandmarksShapeLayer = CAShapeLayer()
-//        faceLandmarksShapeLayer.name = "FaceLandmarksLayer"
-//        faceLandmarksShapeLayer.bounds = captureDeviceBounds
-//        faceLandmarksShapeLayer.anchorPoint = normalizedCenterPoint
-//        faceLandmarksShapeLayer.position = captureDeviceBoundsCenterPoint
-//        faceLandmarksShapeLayer.fillColor = nil
-//        faceLandmarksShapeLayer.strokeColor = NSColor.yellow.withAlphaComponent(0.7).cgColor
-//        faceLandmarksShapeLayer.lineWidth = 3
-//        faceLandmarksShapeLayer.shadowOpacity = 0.7
-//        faceLandmarksShapeLayer.shadowRadius = 5
-        
         overlayLayer.addSublayer(faceOverShapeLayer)
         overlayLayer.addSublayer(faceRectangleShapeLayer)
-//        faceRectangleShapeLayer.addSublayer(faceLandmarksShapeLayer)
         rootLayer.addSublayer(overlayLayer)
         
         self.detectionOverlayLayer = overlayLayer
         self.detectedFaceRectangleShapeLayer = faceRectangleShapeLayer
-//        self.detectedFaceLandmarksShapeLayer = faceLandmarksShapeLayer
         
         self.updateLayerGeometry()
     }
@@ -359,32 +361,9 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         let videoPreviewRect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
         
-        var rotation: CGFloat
-        var scaleX: CGFloat
-        var scaleY: CGFloat
-        
-        // Rotate the layer into screen orientation.
-//        switch UIDevice.current.orientation {
-//        case .portraitUpsideDown:
-//            rotation = 180
-//            scaleX = videoPreviewRect.width / captureDeviceResolution.width
-//            scaleY = videoPreviewRect.height / captureDeviceResolution.height
-//
-//        case .landscapeLeft:
-//            rotation = 90
-//            scaleX = videoPreviewRect.height / captureDeviceResolution.width
-//            scaleY = scaleX
-//
-//        case .landscapeRight:
-//            rotation = -90
-//            scaleX = videoPreviewRect.height / captureDeviceResolution.width
-//            scaleY = scaleX
-//
-//        default:
-            rotation = 0
-            scaleX = videoPreviewRect.width / captureDeviceResolution.width
-            scaleY = videoPreviewRect.height / captureDeviceResolution.height
-//        }
+        let rotation: CGFloat = 0
+        let scaleX: CGFloat = videoPreviewRect.width / captureDeviceResolution.width
+        let scaleY: CGFloat = videoPreviewRect.height / captureDeviceResolution.height
         
         // Scale and mirror the image to ensure upright presentation.
         let affineTransform = CGAffineTransform(rotationAngle: radiansForDegrees(rotation))
@@ -394,19 +373,6 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         // Cover entire screen UI.
         let rootLayerBounds = rootLayer.bounds
         overlayLayer.position = CGPoint(x: rootLayerBounds.midX, y: rootLayerBounds.midY)
-    }
-    
-    fileprivate func addPoints(in landmarkRegion: VNFaceLandmarkRegion2D, to path: CGMutablePath, applying affineTransform: CGAffineTransform, closingWhenComplete closePath: Bool) {
-        let pointCount = landmarkRegion.pointCount
-        if pointCount > 1 {
-            let points: [CGPoint] = landmarkRegion.normalizedPoints
-            path.move(to: points[0], transform: affineTransform)
-            path.addLines(between: points, transform: affineTransform)
-            if closePath {
-                path.addLine(to: points[0], transform: affineTransform)
-                path.closeSubpath()
-            }
-        }
     }
     
     fileprivate func addIndicators(to faceRectanglePath: CGMutablePath, faceLandmarksPath: CGMutablePath, for faceObservation: VNFaceObservation) {
@@ -424,43 +390,12 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         let ellipseWidth: CGFloat = 20
         
         faceRectanglePath.addEllipse(in: CGRect(x: faceBounds.midX - ellipseWidth, y: faceBounds.midY - ellipseWidth, width: ellipseWidth * 2, height: ellipseWidth * 2))
-        
-//        if let landmarks = faceObservation.landmarks {
-//            // Landmarks are relative to -- and normalized within --- face bounds
-//            let affineTransform = CGAffineTransform(translationX: faceBounds.origin.x, y: faceBounds.origin.y)
-//                .scaledBy(x: faceBounds.size.width, y: faceBounds.size.height)
-//
-//            // Treat eyebrows and lines as open-ended regions when drawing paths.
-////            let openLandmarkRegions: [VNFaceLandmarkRegion2D?] = [
-////                landmarks.leftEyebrow,
-////                landmarks.rightEyebrow,
-////                landmarks.faceContour,
-////                landmarks.noseCrest,
-////                landmarks.medianLine
-////            ]
-////            for openLandmarkRegion in openLandmarkRegions where openLandmarkRegion != nil {
-////                self.addPoints(in: openLandmarkRegion!, to: faceLandmarksPath, applying: affineTransform, closingWhenComplete: false)
-////            }
-////
-////            // Draw eyes, lips, and nose as closed regions.
-////            let closedLandmarkRegions: [VNFaceLandmarkRegion2D?] = [
-////                landmarks.leftEye,
-////                landmarks.rightEye,
-////                landmarks.outerLips,
-////                landmarks.innerLips,
-////                landmarks.nose
-////            ]
-////            for closedLandmarkRegion in closedLandmarkRegions where closedLandmarkRegion != nil {
-////                self.addPoints(in: closedLandmarkRegion!, to: faceLandmarksPath, applying: affineTransform, closingWhenComplete: true)
-////            }
-//        }
     }
     
     var isJumping = false
     /// - Tag: DrawPaths
     fileprivate func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
         guard let faceRectangleShapeLayer = self.detectedFaceRectangleShapeLayer
-//              let faceLandmarksShapeLayer = self.detectedFaceLandmarksShapeLayer
         else {
             return
         }
@@ -481,14 +416,12 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         latestPoint = PointPair(date: .init(), point: dataPoint)
         if let refY = referencePoint?.point.y {
             if (refY - dataPoint.y) < 25 {
-//                print("NO JUMP")
                 isJumping = false
                 self.jumpLabel.isHidden = true
 
             } else {
                 if !isJumping {
                     isJumping = true
-//                    print("JUMP")
                     space()
                     jumpLabel.isHidden = false
                 }
@@ -565,7 +498,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         for trackingRequest in requests {
             
             guard let results = trackingRequest.results else {
-                return
+                return 
             }
             
             guard let observation = results[0] as? VNDetectedObjectObservation else {
@@ -585,6 +518,9 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         if newTrackingRequests.isEmpty {
             // Nothing to track, so abort.
+            DispatchQueue.main.async {
+                self.detectedFaceRectangleShapeLayer?.path = nil
+            }
             return
         }
         
@@ -601,7 +537,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
                 }
                 
                 guard let landmarksRequest = request as? VNDetectFaceLandmarksRequest,
-                      let results = landmarksRequest.results as? [VNFaceObservation] else {
+                      let results = landmarksRequest.results else {
                     return
                 }
                 

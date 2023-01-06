@@ -736,8 +736,8 @@
                                 <color key="fillColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
                             </box>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F27-q8-m3T">
-                                <rect key="frame" x="9" y="9" width="92" height="32"/>
-                                <buttonCell key="cell" type="push" title="Callibrate" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="G4h-ND-wbf">
+                                <rect key="frame" x="9" y="9" width="116" height="32"/>
+                                <buttonCell key="cell" type="push" title="Callibrate [C]" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="G4h-ND-wbf">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -745,14 +745,27 @@
                                     <action selector="callibrateButtonPressed:" target="XfG-lQ-9wD" id="Jth-QH-vn4"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vqf-jA-qea">
+                                <rect key="frame" x="9" y="37" width="116" height="32"/>
+                                <buttonCell key="cell" type="push" title="Retrack [R]" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ozp-od-2Mx">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="retrackButtonPressed:" target="XfG-lQ-9wD" id="fu3-8Q-JCn"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="vqf-jA-qea" firstAttribute="width" secondItem="F27-q8-m3T" secondAttribute="width" id="CFg-AV-gwr"/>
                             <constraint firstItem="bkH-Xq-frd" firstAttribute="top" secondItem="HZg-YN-Ay8" secondAttribute="bottom" id="UKK-fj-SW6"/>
                             <constraint firstItem="bkH-Xq-frd" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="Yml-wK-bS1"/>
+                            <constraint firstItem="vqf-jA-qea" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="16" id="bq5-1S-e3X"/>
                             <constraint firstItem="HZg-YN-Ay8" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="cw3-Rl-j3p"/>
                             <constraint firstAttribute="bottom" secondItem="F27-q8-m3T" secondAttribute="bottom" constant="16" id="fGh-vW-eWE"/>
                             <constraint firstAttribute="bottom" secondItem="HZg-YN-Ay8" secondAttribute="bottom" constant="64" id="h9J-fJ-HWB"/>
                             <constraint firstAttribute="trailing" secondItem="HZg-YN-Ay8" secondAttribute="trailing" id="hFs-P4-blg"/>
+                            <constraint firstItem="F27-q8-m3T" firstAttribute="top" secondItem="vqf-jA-qea" secondAttribute="bottom" constant="8" id="pCA-ga-Qy0"/>
                             <constraint firstAttribute="bottom" secondItem="bkH-Xq-frd" secondAttribute="bottom" id="q9Y-0w-ejo"/>
                             <constraint firstItem="HZg-YN-Ay8" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="ruK-Co-xNQ"/>
                             <constraint firstAttribute="trailing" secondItem="bkH-Xq-frd" secondAttribute="trailing" id="sZW-m0-GGx"/>
