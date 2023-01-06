@@ -14,7 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		32947E3529659355005FA83A /* Vision Thing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Vision Thing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32947E3529659355005FA83A /* Jumping Dino.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jumping Dino.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		32947E3829659355005FA83A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		32947E3A29659355005FA83A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		32947E3C29659356005FA83A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -36,7 +36,7 @@
 		32947E2C29659355005FA83A = {
 			isa = PBXGroup;
 			children = (
-				32947E3729659355005FA83A /* Vision Thing */,
+				32947E3729659355005FA83A /* Jumping Dino */,
 				32947E3629659355005FA83A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -44,12 +44,12 @@
 		32947E3629659355005FA83A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				32947E3529659355005FA83A /* Vision Thing.app */,
+				32947E3529659355005FA83A /* Jumping Dino.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		32947E3729659355005FA83A /* Vision Thing */ = {
+		32947E3729659355005FA83A /* Jumping Dino */ = {
 			isa = PBXGroup;
 			children = (
 				32947E3829659355005FA83A /* AppDelegate.swift */,
@@ -58,15 +58,15 @@
 				32947E3E29659356005FA83A /* Main.storyboard */,
 				32947E4129659356005FA83A /* Vision_Thing.entitlements */,
 			);
-			path = "Vision Thing";
+			path = "Jumping Dino";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		32947E3429659355005FA83A /* Vision Thing */ = {
+		32947E3429659355005FA83A /* Jumping Dino */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 32947E4429659356005FA83A /* Build configuration list for PBXNativeTarget "Vision Thing" */;
+			buildConfigurationList = 32947E4429659356005FA83A /* Build configuration list for PBXNativeTarget "Jumping Dino" */;
 			buildPhases = (
 				32947E3129659355005FA83A /* Sources */,
 				32947E3229659355005FA83A /* Frameworks */,
@@ -76,9 +76,9 @@
 			);
 			dependencies = (
 			);
-			name = "Vision Thing";
+			name = "Jumping Dino";
 			productName = "Vision Thing";
-			productReference = 32947E3529659355005FA83A /* Vision Thing.app */;
+			productReference = 32947E3529659355005FA83A /* Jumping Dino.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -96,7 +96,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 32947E3029659355005FA83A /* Build configuration list for PBXProject "Vision Thing" */;
+			buildConfigurationList = 32947E3029659355005FA83A /* Build configuration list for PBXProject "Jumping Dino" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -109,7 +109,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				32947E3429659355005FA83A /* Vision Thing */,
+				32947E3429659355005FA83A /* Jumping Dino */,
 			);
 		};
 /* End PBXProject section */
@@ -268,13 +268,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Vision Thing/Vision_Thing.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Jumping Dino/Vision_Thing.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XL5JK4F896;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Jumping Dino";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Track jumps";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
@@ -297,13 +298,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Vision Thing/Vision_Thing.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Jumping Dino/Vision_Thing.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XL5JK4F896;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Jumping Dino";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Track jumps";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
@@ -324,7 +326,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		32947E3029659355005FA83A /* Build configuration list for PBXProject "Vision Thing" */ = {
+		32947E3029659355005FA83A /* Build configuration list for PBXProject "Jumping Dino" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				32947E4229659356005FA83A /* Debug */,
@@ -333,7 +335,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		32947E4429659356005FA83A /* Build configuration list for PBXNativeTarget "Vision Thing" */ = {
+		32947E4429659356005FA83A /* Build configuration list for PBXNativeTarget "Jumping Dino" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				32947E4529659356005FA83A /* Debug */,
