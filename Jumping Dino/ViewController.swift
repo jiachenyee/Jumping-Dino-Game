@@ -320,7 +320,7 @@ class ViewController: NSViewController, AVCaptureVideoDataOutputSampleBufferDele
         faceRectangleShapeLayer.anchorPoint = normalizedCenterPoint
         faceRectangleShapeLayer.position = captureDeviceBoundsCenterPoint
         faceRectangleShapeLayer.fillColor = nil
-        faceRectangleShapeLayer.strokeColor = NSColor.blue.withAlphaComponent(0.25).cgColor
+        faceRectangleShapeLayer.strokeColor = NSColor.blue.withAlphaComponent(0.5).cgColor
         faceRectangleShapeLayer.lineWidth = 10
         faceRectangleShapeLayer.shadowOpacity = 0.7
         faceRectangleShapeLayer.shadowRadius = 5
